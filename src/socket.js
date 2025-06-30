@@ -1,5 +1,9 @@
 import { io } from "socket.io-client";
+const socket = io("https://jamsync-backend.onrender.com", {
+  transports: ["websocket","polling"],
+});
 
-const socket = io("http://localhost:5000"); // backend URL
+socket.on("connect", () => {
+  console.log("✅ Connected to socket server", socket.id);
+});
 
-export default socket;
