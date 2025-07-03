@@ -1,11 +1,11 @@
-// File: src/App.js
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // useNavigate removed as it's not directly used in AppWrapper
 import Sidebar from "./components/Sidebar";
 import JoinRoomUI from "./components/JoinRoomUI";
+import SpotifyLogin from "./components/SpotifyLogin";
 import ChatRoom from "./components/ChatRoom";
 import SpotifyCallback from "./components/SpotifyCallback";
-import "./index.css";
+import "./index.css"; // Ensure this points to your CSS file
 
 function AppWrapper() {
   const [roomId, setRoomId] = useState("");
@@ -19,9 +19,15 @@ function AppWrapper() {
   };
 
   return (
+    // Apply the flex, h-screen, bg, text, and font styles directly here
+    // or create a single class like "app-wrapper" in CSS
     <div className="flex h-screen bg-[#121212] text-white font-sans">
       <Sidebar />
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 p-6 overflow-y-auto main-content"> {/* Added main-content class */}
+        
+        {/* Spotify Login button on top */}
+        <SpotifyLogin />
+
         <Routes>
           <Route
             path="/"
@@ -54,6 +60,7 @@ function App() {
   );
 }
 
-<Route path="/callback" element={<SpotifyCallback />} />
+// REMOVED DUPLICATE ROUTE DEFINITION: <Route path="/callback" element={<SpotifyCallback />} />
+// This line was outside the App component and was redundant.
 
 export default App;
