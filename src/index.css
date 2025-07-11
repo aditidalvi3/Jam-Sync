@@ -1,41 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Root Variables for Consistent Theming */
+/* === Theme Variables === */
 :root {
     --font-main: 'Inter', sans-serif;
 
-    --color-bg-main: #da1c1c;
-    --color-bg-sidebar: #1A1A1A;
-    --color-bg-input: #282828;
-    --color-bg-button: #4CAF50;
-    --color-bg-button-hover: #3e8e41;
+    /* Backgrounds */
+    --bg-main: linear-gradient(to bottom right, #1c1c1c, #2a2a2a);
+    --bg-sidebar: rgba(30, 30, 30, 0.9);
+    --bg-input: rgba(40, 40, 40, 0.95);
+    --bg-card: rgba(40, 40, 40, 0.85);
+    --bg-button: #1DB954;
+    --bg-button-hover: #1ED760;
 
-    --color-border: #3A3A3A;
-    --color-border-light: #282828;
+    /* Borders */
+    --border-default: #3A3A3A;
+    --border-light: #282828;
 
-    --color-text-main: #E0E0E0;
-    --color-text-muted: #B3B3B3;
-    --color-text-link: #FFFFFF;
-    --color-accent: #4CAF50;
-    --color-username: #8BC34A;
+    /* Text */
+    --text-primary: #EAEAEA;
+    --text-secondary: #B3B3B3;
+    --text-accent: #4CAF50;
+    --text-highlight: #FFFFFF;
 
+    /* Accent Colors */
+    --accent: #4CAF50;
+    --username: #8BC34A;
+
+    /* Shadows */
+    --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.6);
     --shadow-glow: 0 4px 15px rgba(29, 185, 84, 0.4);
-    --shadow-box: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Global Reset & Base Styles */
+/* === Global Styles === */
 body {
     margin: 0;
     padding: 0;
     font-family: var(--font-main);
+    background: var(--bg-main);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--color-bg-main);
-    color: var(--color-text-main);
-    line-height: 1.6;
 }
 
-/* Flex Utility */
+/* === Layout === */
 .flex {
     display: flex;
 }
@@ -44,29 +51,31 @@ body {
     height: 100vh;
 }
 
-/* Sidebar */
+/* === Sidebar === */
 .sidebar {
     width: 250px;
-    background-color: var(--color-bg-sidebar);
+    background: var(--bg-sidebar);
     padding: 20px;
-    border-right: 1px solid var(--color-border-light);
+    border-right: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-deep);
 }
 
 .sidebar__logo {
     font-size: 1.8rem;
     font-weight: 700;
-    color: var(--color-accent);
-    margin-bottom: 30px;
+    color: var(--accent);
     text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
 }
 
 .sidebar__nav {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 .sidebar__item {
@@ -76,12 +85,12 @@ body {
 .sidebar__link {
     display: flex;
     align-items: center;
-    color: var(--color-text-muted);
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 1rem;
     padding: 10px 15px;
-    border-radius: 8px;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
 
 .sidebar__link svg {
@@ -91,58 +100,57 @@ body {
 
 .sidebar__link:hover,
 .sidebar__link.active {
-    background-color: var(--color-border-light);
-    color: var(--color-text-link);
+    background-color: var(--border-light);
+    color: var(--text-highlight);
 }
 
-/* Main Content Area */
+/* === Main Content === */
 .main-content {
     flex: 1;
-    padding: 20px 30px;
+    padding: 30px 40px;
     overflow-y: auto;
+    background: transparent;
 }
 
-/* Spotify Login Button */
+/* === Spotify Login Button === */
 .spotify-login-btn {
-    background-color: #1DB954;
+    background: var(--bg-button);
     color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 50px;
+    padding: 14px 30px;
     font-size: 1rem;
     font-weight: 600;
+    border: none;
+    border-radius: 30px;
     cursor: pointer;
-    margin: 0 auto 40px;
-    width: fit-content;
+    transition: all 0.3s ease;
     box-shadow: var(--shadow-glow);
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin: 0 auto 40px;
+    display: block;
+    width: fit-content;
 }
 
 .spotify-login-btn:hover {
-    background-color: #1ED760;
-    transform: translateY(-2px);
+    background-color: var(--bg-button-hover);
+    transform: translateY(-2px) scale(1.02);
 }
 
-.spotify-login-btn:active {
-    transform: translateY(0);
-}
-
-/* Join Room */
+/* === Join Room === */
 .join-room {
     max-width: 500px;
     margin: 60px auto;
     padding: 40px;
-    background-color: var(--color-bg-sidebar);
-    border-radius: 12px;
-    box-shadow: var(--shadow-box);
+    background: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-deep);
+    backdrop-filter: blur(10px);
     text-align: center;
 }
 
 .join-room__title {
     font-size: 2rem;
-    color: var(--color-accent);
-    margin-bottom: 30px;
     font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 30px;
 }
 
 .input-group {
@@ -153,60 +161,56 @@ body {
 .input-group label {
     display: block;
     margin-bottom: 8px;
-    font-size: 0.95rem;
-    color: var(--color-text-muted);
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
 .input-group input[type="text"] {
     width: 100%;
-    padding: 12px 15px;
-    background-color: var(--color-bg-input);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    color: var(--color-text-main);
+    padding: 12px 16px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    color: var(--text-primary);
     font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-group input[type="text"]:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    border-color: var(--accent);
+    box-shadow: 0 0 5px 2px rgba(76, 175, 80, 0.4);
+    outline: none;
 }
 
 .join-button {
-    background-color: var(--color-bg-button);
+    background-color: var(--accent);
     color: white;
     padding: 14px 30px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    margin-top: 20px;
     width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 20px;
 }
 
 .join-button:hover {
-    background-color: var(--color-bg-button-hover);
-    transform: translateY(-1px);
+    background-color: var(--bg-button-hover);
+    transform: translateY(-2px);
 }
 
-.join-button:active {
-    transform: translateY(0);
-}
-
-/* Chat Room */
+/* === Chat Room === */
 .chat-room {
-    background-color: var(--color-bg-sidebar);
-    border-radius: 12px;
+    background: var(--bg-card);
+    border-radius: 16px;
     padding: 20px;
-    box-shadow: var(--shadow-box);
+    box-shadow: var(--shadow-deep);
     height: calc(100vh - 100px);
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(8px);
 }
 
 .chat-room__messages {
@@ -217,55 +221,54 @@ body {
 }
 
 .chat-message {
-    margin-bottom: 10px;
-    line-height: 1.4;
+    margin-bottom: 12px;
+    line-height: 1.5;
 }
 
 .chat-message .username {
     font-weight: 600;
-    color: var(--color-username);
+    color: var(--username);
     margin-right: 8px;
 }
 
 .chat-input {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .chat-input input[type="text"] {
-    flex-grow: 1;
+    flex: 1;
     padding: 12px 15px;
-    background-color: var(--color-bg-input);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    color: var(--color-text-main);
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    color: var(--text-primary);
     font-size: 1rem;
-    outline: none;
 }
 
 .chat-input button {
-    background-color: var(--color-bg-button);
+    background-color: var(--accent);
     color: white;
     padding: 12px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .chat-input button:hover {
-    background-color: var(--color-bg-button-hover);
+    background-color: var(--bg-button-hover);
 }
 
-/* Spotify Callback */
+/* === Callback === */
 .spotify-callback {
     text-align: center;
     padding: 50px;
     font-size: 1.2rem;
-    color: var(--color-text-muted);
+    color: var(--text-secondary);
 }
 
-/* Responsive Layout */
+/* === Responsive Design === */
 @media (max-width: 768px) {
     .flex {
         flex-direction: column;
@@ -275,7 +278,7 @@ body {
         width: 100%;
         padding: 15px;
         border-right: none;
-        border-bottom: 1px solid var(--color-border-light);
+        border-bottom: 1px solid var(--border-light);
     }
 
     .sidebar__nav {
@@ -289,12 +292,12 @@ body {
     }
 
     .main-content {
-        padding: 15px;
+        padding: 20px;
     }
 
     .join-room {
         margin: 30px auto;
-        padding: 25px;
+        padding: 30px;
     }
 
     .spotify-login-btn {
@@ -302,12 +305,12 @@ body {
     }
 }
 
-/* Scrollbar Styles */
+/* === Scrollbars === */
 ::-webkit-scrollbar {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: var(--color-border-light);
+    background: var(--border-light);
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
@@ -318,8 +321,8 @@ body {
     background: #777;
 }
 
-/* For Firefox */
+/* Firefox */
 /* body {
     scrollbar-width: thin;
-    scrollbar-color: #555 #282
-*/
+    scrollbar-color: #555 #282828;
+} */
