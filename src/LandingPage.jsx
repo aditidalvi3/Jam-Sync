@@ -11,19 +11,11 @@ const mediaImages = [
 const LandingPage = ({ onToggleTheme, isDarkMode }) => {
   return (
     <div className="landing-page">
-      <nav className="navbar">
-        <ul>
-          <li><a href="#">Manifesto</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><button className="nav-btn">Sign In</button></li>
-          <li><button className="nav-btn primary">Join waitlist</button></li>
-        </ul>
-      </nav>
 
       <div className="hero">
         <h1 className="logo">JAMSYNC</h1>
         <p className="subtitle">
-          A real-time music collaboration tool for <span className="tag">creators</span>
+          A real-time music collaboration tool for people
         </p>
       </div>
 
