@@ -1,4 +1,3 @@
-// File: src/components/JoinRoomUI.js
 import React from "react";
 import { motion } from "framer-motion";
 
@@ -37,7 +36,11 @@ const JoinRoomUI = ({ username, setUsername, roomId, setRoomId, handleJoin }) =>
       <button
         onClick={handleJoin}
         disabled={!username || !roomId}
-        className="w-full py-3 bg-[#1DB954] text-black font-semibold rounded-xl hover:bg-[#1ed760] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className={`w-full py-3 rounded-xl font-semibold transition-colors duration-200 ${
+          username && roomId
+            ? "bg-[#1DB954] text-black hover:bg-[#1ed760]"
+            : "bg-gray-700 text-gray-400 cursor-not-allowed"
+        }`}
       >
         Join Room
       </button>

@@ -1,33 +1,41 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 function Sidebar() {
-  const handleNavigation = (section) => {
-    console.log(`Navigating to: ${section}`);
-    // In future: set state or navigate using React Router
-  };
-
   return (
     <aside className="w-64 bg-[#1f1f1f] p-6">
-      <h2 className="text-2xl font-bold mb-6">JamSync</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white">JamSync</h2>
       <nav className="space-y-4">
-        <button
-          onClick={() => handleNavigation("Home")}
-          className="block w-full text-left px-2 py-1 rounded hover:bg-[#2c2c2c]"
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `block w-full text-left px-2 py-1 rounded transition-colors duration-200 ${
+              isActive ? "bg-[#2c2c2c] text-[#1DB954]" : "hover:bg-[#2c2c2c]"
+            }`
+          }
         >
           Home
-        </button>
-        <button
-          onClick={() => handleNavigation("Rooms")}
-          className="block w-full text-left px-2 py-1 rounded hover:bg-[#2c2c2c]"
+        </NavLink>
+        <NavLink
+          to="/join"
+          className={({ isActive }) =>
+            `block w-full text-left px-2 py-1 rounded transition-colors duration-200 ${
+              isActive ? "bg-[#2c2c2c] text-[#1DB954]" : "hover:bg-[#2c2c2c]"
+            }`
+          }
         >
           Rooms
-        </button>
-        <button
-          onClick={() => handleNavigation("Settings")}
-          className="block w-full text-left px-2 py-1 rounded hover:bg-[#2c2c2c]"
+        </NavLink>
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            `block w-full text-left px-2 py-1 rounded transition-colors duration-200 ${
+              isActive ? "bg-[#2c2c2c] text-[#1DB954]" : "hover:bg-[#2c2c2c]"
+            }`
+          }
         >
           Settings
-        </button>
+        </NavLink>
       </nav>
     </aside>
   );

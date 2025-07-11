@@ -4,7 +4,6 @@ import VideoChat from "./VideoChat";
 import { FiSend } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-// Optional: Dummy Now Playing bar
 const NowPlaying = ({ track }) => (
   <div className="bg-[#1f1f1f] p-3 text-sm flex items-center justify-between text-white shadow-inner">
     <div>
@@ -19,8 +18,8 @@ const ChatRoom = ({ roomId, username }) => {
   const [messages, setMessages] = useState([]);
   const [typingUser, setTypingUser] = useState("");
   const chatEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
-  // Emit join-room & listen to events
   useEffect(() => {
     socket.emit("join-room", roomId, username);
 
@@ -36,9 +35,10 @@ const ChatRoom = ({ roomId, username }) => {
       setMessages((prev) => [...prev, { system: true, message: `${name} left the room` }]);
     });
 
-    socket.on("typing", ({ username }) => {
-      setTypingUser(username);
-      setTimeout(() => setTypingUser(""), 2000);
+    socket.on("typing", ({ username: typedUsername }) => {
+      setTypingUser(typedUsername);
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => setTypingUser(""), 2000);
     });
 
     return () => {
@@ -46,15 +46,14 @@ const ChatRoom = ({ roomId, username }) => {
       socket.off("user-joined");
       socket.off("user-left");
       socket.off("typing");
+      clearTimeout(typingTimeoutRef.current);
     };
   }, [roomId, username]);
 
-  // Auto-scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Send message
   const sendMessage = () => {
     if (!message.trim()) return;
     socket.emit("chat-message", {
@@ -75,17 +74,14 @@ const ChatRoom = ({ roomId, username }) => {
 
   return (
     <div className="flex flex-col h-screen bg-[#121212] text-white">
-      {/* Header */}
       <div className="p-4 bg-[#1f1f1f] shadow flex justify-between items-center">
         <h2 className="text-xl font-bold">🎧 Jam Room: {roomId}</h2>
         <span className="text-sm text-gray-400">User: {username}</span>
       </div>
 
-      {/* Chat & Video */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Chat Area */}
         <div className="flex flex-col flex-1 p-6">
-          <div className="flex-1 overflow-y-auto space-y-3 mb-2 bg-[#181818] p-4 rounded-xl">
+          <div className="flex flex-col flex-1 overflow-y-auto space-y-3 mb-2 bg-[#181818] p-4 rounded-xl">
             {messages.map((msg, i) =>
               msg.system ? (
                 <motion.div
@@ -116,12 +112,10 @@ const ChatRoom = ({ roomId, username }) => {
             <div ref={chatEndRef} />
           </div>
 
-          {/* Typing Indicator */}
           {typingUser && (
             <div className="text-sm text-gray-400 italic mb-2">{typingUser} is typing...</div>
           )}
 
-          {/* Input Bar */}
           <div className="flex items-center space-x-4">
             <input
               type="text"
@@ -143,13 +137,11 @@ const ChatRoom = ({ roomId, username }) => {
           </div>
         </div>
 
-        {/* Video Chat */}
         <div className="hidden lg:block w-1/2 bg-[#1a1a1a] p-4">
           <VideoChat roomId={roomId} />
         </div>
       </div>
 
-      {/* Now Playing Bar */}
       <NowPlaying track={{ title: "Midnight City", artist: "M83" }} />
     </div>
   );

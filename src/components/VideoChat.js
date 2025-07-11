@@ -11,119 +11,103 @@ const VideoChat = ({ roomId }) => {
 
   useEffect(() => {
     const init = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
 
-      localVideoRef.current.srcObject = stream;
+        localVideoRef.current.srcObject = stream;
 
-      peerConnection.current = new RTCPeerConnection();
+        peerConnection.current = new RTCPeerConnection();
 
-      stream.getTracks().forEach((track) => {
-        peerConnection.current.addTrack(track, stream);
-      });
+        // Add local tracks to peer connection
+        stream.getTracks().forEach((track) => {
+          peerConnection.current.addTrack(track, stream);
+        });
 
-      peerConnection.current.ontrack = (event) => {
-        remoteVideoRef.current.srcObject = event.streams[0];
-      };
+        // Listen for remote tracks
+        peerConnection.current.ontrack = (event) => {
+          remoteVideoRef.current.srcObject = event.streams[0];
+        };
 
-      socket.emit("join-room", roomId);
+        // **CRITICAL FIX:** Handle ICE candidates
+        peerConnection.current.onicecandidate = (event) => {
+          if (event.candidate) {
+            socket.emit("ice-candidate", {
+              candidate: event.candidate,
+              roomId,
+            });
+          }
+        };
 
-      socket.on("offer", async (offer) => {
-        await peerConnection.current.setRemoteDescription(offer);
-        const answer = await peerConnection.current.createAnswer();
-        await peerConnection.current.setLocalDescription(answer);
-        socket.emit("answer", { answer, roomId });
-      });
+        // Listen for socket events
+        socket.on("offer", async (offer) => {
+          await peerConnection.current.setRemoteDescription(offer);
+          const answer = await peerConnection.current.createAnswer();
+          await peerConnection.current.setLocalDescription(answer);
+          socket.emit("answer", { answer, roomId });
+        });
 
-      socket.on("answer", async (answer) => {
-        await peerConnection.current.setRemoteDescription(answer);
-      });
+        socket.on("answer", async (answer) => {
+          await peerConnection.current.setRemoteDescription(answer);
+        });
 
-      socket.on("ice-candidate", async (candidate) => {
-        try {
-          await peerConnection.current.addIceCandidate(candidate);
-        } catch (err) {
-          console.error("Error adding received ice candidate", err);
-        }
-      });
+        socket.on("ice-candidate", async (candidate) => {
+          try {
+            await peerConnection.current.addIceCandidate(candidate);
+          } catch (e) {
+            console.error("Error adding received ice candidate", e);
+          }
+        });
 
-      peerConnection.current.onicecandidate = (event) => {
-        if (event.candidate) {
-          socket.emit("ice-candidate", {
-            candidate: event.candidate,
-            roomId,
-          });
-        }
-      };
-
-      const offer = await peerConnection.current.createOffer();
-      await peerConnection.current.setLocalDescription(offer);
-      socket.emit("offer", { offer, roomId });
-
-      // Push-to-talk
-      const audioTrack = stream.getAudioTracks()[0];
-
-      const handleKeyDown = (e) => {
-        if (e.code === "Space") {
-          audioTrack.enabled = true;
-        }
-      };
-
-      const handleKeyUp = (e) => {
-        if (e.code === "Space") {
-          audioTrack.enabled = false;
-        }
-      };
-
-      window.addEventListener("keydown", handleKeyDown);
-      window.addEventListener("keyup", handleKeyUp);
-
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-        window.removeEventListener("keyup", handleKeyUp);
-      };
+        // Only emit to connect peers, joining the room is handled by ChatRoom.js
+        socket.emit("start-webrtc", roomId);
+      } catch (err) {
+        console.error("Failed to get local stream or init WebRTC:", err);
+      }
     };
 
     init();
+
+    // Cleanup function
+    return () => {
+      if (localVideoRef.current && localVideoRef.current.srcObject) {
+        localVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
+      }
+      if (peerConnection.current) {
+        peerConnection.current.close();
+      }
+      socket.off("offer");
+      socket.off("answer");
+      socket.off("ice-candidate");
+    };
   }, [roomId]);
 
   const toggleMute = () => {
-    const audioTrack = localVideoRef.current.srcObject
-      ?.getAudioTracks?.()[0];
+    const audioTrack = localVideoRef.current.srcObject.getAudioTracks()[0];
     if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
-      setIsMuted(!audioTrack.enabled);
+      audioTrack.enabled = !isMuted;
+      setIsMuted(!isMuted);
     }
   };
 
   const toggleVideo = () => {
-    const videoTrack = localVideoRef.current.srcObject
-      ?.getVideoTracks?.()[0];
+    const videoTrack = localVideoRef.current.srcObject.getVideoTracks()[0];
     if (videoTrack) {
-      videoTrack.enabled = !videoTrack.enabled;
-      setVideoOn(videoTrack.enabled);
+      videoTrack.enabled = !videoOn;
+      setVideoOn(!videoOn);
     }
   };
 
   const shareScreen = async () => {
     try {
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-      });
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const sender = peerConnection.current.getSenders().find(s => s.track.kind === 'video');
+      sender.replaceTrack(screenStream.getVideoTracks()[0]);
 
-      const screenTrack = screenStream.getVideoTracks()[0];
-
-      const sender = peerConnection.current
-        .getSenders()
-        .find((s) => s.track.kind === "video");
-
-      sender.replaceTrack(screenTrack);
-
-      screenTrack.onended = () => {
-        const originalVideoTrack =
-          localVideoRef.current.srcObject.getVideoTracks()[0];
+      screenStream.getVideoTracks()[0].onended = () => {
+        const originalVideoTrack = localVideoRef.current.srcObject.getVideoTracks()[0];
         sender.replaceTrack(originalVideoTrack);
       };
     } catch (err) {
@@ -164,15 +148,11 @@ const VideoChat = ({ roomId }) => {
 
         <button
           onClick={shareScreen}
-          className="bg-teal-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
         >
           Share Screen
         </button>
       </div>
-
-      <p className="text-gray-500 text-sm">
-        🎙️ Hold <strong>Spacebar</strong> to talk (Push-to-Talk)
-      </p>
     </div>
   );
 };
