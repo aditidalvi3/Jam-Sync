@@ -6,7 +6,7 @@ body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #121212; /* Dark background from App.js */
+    background-color: #da1c1c; /* Dark background from App.js */
     color: #E0E0E0; /* Light grey for main text */
     line-height: 1.6;
 }
