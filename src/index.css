@@ -201,3 +201,8 @@ body, html {
   font-size: 0.9rem;
   opacity: 0.5;
 }
+
+/* FIX: Add padding to the main content to prevent overlap with the fixed navbar */
+.content-wrapper {
+  padding-top: 6rem; /* This value is a suggestion; adjust it if needed to match your navbar's height */
+}
