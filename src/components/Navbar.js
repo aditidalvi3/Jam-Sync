@@ -14,7 +14,8 @@ function Navbar() {
             <li><NavLink to="/">Home</NavLink></li>
             <li><NavLink to="/rooms">Rooms</NavLink></li>
             <li><NavLink to="/settings">Settings</NavLink></li>
-            <li><button className="nav-btn">Sign In</button></li>
+            {/* FIX: Changed button to NavLink to route to the login page */}
+            <li><NavLink to="/login" className="nav-btn">Sign In</NavLink></li>
           </ul>
         </div>
       </div>
