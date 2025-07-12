@@ -4,19 +4,26 @@ import VideoChat from "./VideoChat";
 import { FiSend } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-const NowPlaying = ({ track }) => (
-  <div className="bg-[#1f1f1f] p-3 text-sm flex items-center justify-between text-white shadow-inner">
-    <div>
-      🎵 <strong>{track.title}</strong> by {track.artist}
+const NowPlaying = ({ track }) => {
+  if (!track) {
+    return null; // Don't render if there's no track
+  }
+  return (
+    <div className="bg-[#1f1f1f] p-3 text-sm flex items-center justify-between text-white shadow-inner">
+      <div>
+        🎵 <strong>{track.title}</strong> by {track.artist}
+      </div>
+      <span className="text-[#1DB954]">Now Playing</span>
     </div>
-    <span className="text-[#1DB954]">Now Playing</span>
-  </div>
-);
+  );
+};
 
 const ChatRoom = ({ roomId, username }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [typingUser, setTypingUser] = useState("");
+  // ADDED: State to hold the currently playing track
+  const [nowPlayingTrack, setNowPlayingTrack] = useState(null);
   const chatEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
@@ -40,12 +47,19 @@ const ChatRoom = ({ roomId, username }) => {
       clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = setTimeout(() => setTypingUser(""), 2000);
     });
+    
+    // ADDED: Listener for real-time track updates
+    socket.on("now-playing", (track) => {
+      setNowPlayingTrack(track);
+    });
 
     return () => {
       socket.off("chat-message");
       socket.off("user-joined");
       socket.off("user-left");
       socket.off("typing");
+      // ADDED: Clean up the new socket listener
+      socket.off("now-playing");
       clearTimeout(typingTimeoutRef.current);
     };
   }, [roomId, username]);
@@ -142,7 +156,8 @@ const ChatRoom = ({ roomId, username }) => {
         </div>
       </div>
 
-      <NowPlaying track={{ title: "Midnight City", artist: "M83" }} />
+      {/* FIXED: The NowPlaying component now uses state to get the track */}
+      <NowPlaying track={nowPlayingTrack} />
     </div>
   );
 };

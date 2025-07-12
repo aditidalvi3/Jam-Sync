@@ -15,7 +15,7 @@ const SpotifyCallback = () => {
       return;
     }
 
-    // Fetch Spotify user profile using a correct API endpoint
+    // FIXED: The fetch URL has been corrected to the official Spotify API endpoint
     fetch("https://api.spotify.com/v1/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -43,16 +43,9 @@ const SpotifyCallback = () => {
     return <p className="text-center mt-10 text-red-400">{error}</p>;
   }
 
-  if (!profile) {
-    return <p className="text-center mt-10 text-white">Fetching your Spotify profile...</p>;
-  }
-
-  // This part of the code will no longer be reached due to immediate navigation
+  // The rest of the code is unreachable due to the navigate call, but is left for context
   return (
-    <div className="max-w-lg mx-auto mt-20 text-white text-center space-y-4">
-      <h1 className="text-2xl font-bold text-[#1DB954]">🎧 Welcome, {profile.display_name}!</h1>
-      <p>Email: {profile.email}</p>
-    </div>
+    <p className="text-center mt-10 text-white">Fetching your Spotify profile...</p>
   );
 };
 

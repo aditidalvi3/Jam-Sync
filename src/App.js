@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Sidebar from "./components/Sidebar";
 import JoinRoomUI from "./components/JoinRoomUI";
 import SpotifyLogin from "./components/SpotifyLogin";
 import ChatRoom from "./components/ChatRoom";
 import SpotifyCallback from "./components/SpotifyCallback";
-import LandingPage from "./LandingPage";
+import LandingPage from "./components/LandingPage";
+import Navbar from "./Navbar";
 
 function App() {
   const [roomId, setRoomId] = useState("");
@@ -34,10 +34,11 @@ function App() {
 
   return (
     <Router>
-      <div className="flex h-screen bg-[#121212] text-white font-sans">
-        <Sidebar />
+      {/* UPDATED: The main layout to correctly render sidebar and content */}
+      <div className="flex min-h-screen bg-[#121212] text-white font-sans">
+        <Navbar />
 
-        <main className="flex-1 p-6 overflow-y-auto main-content">
+        <main className="flex-1 p-6 overflow-y-auto">
           <Routes>
             <Route path="/" element={<LandingPage onToggleTheme={toggleTheme} isDarkMode={isDarkMode} />} />
             <Route
