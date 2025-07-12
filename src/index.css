@@ -41,25 +41,50 @@ body, html {
 }
 
 /* Navbar */
+/* Container for the entire navbar */
 .navbar {
-  position: absolute;
-  top: 30px;
+  /* Positions the navbar at the top of the viewport and spans its full width */
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 60px;
-  z-index: 10;
+  
+  /* Adds a subtle semi-transparent background for a modern look */
+  background-color: rgba(var(--nav-bg-color-rgb), 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* Adds a light border at the bottom for separation */
+  border-bottom: 1px solid rgba(var(--nav-border-color-rgb), 0.2);
+
+  /* Adds padding to the top/bottom for spacing */
+  padding: 1.5rem 0;
+  z-index: 1000;
 }
+
+/* Inner wrapper to contain the navbar content */
+.navbar-container {
+  display: flex;
+  justify-content: space-between; /* Pushes content to the left and right */
+  align-items: center;
+  max-width: 1200px; /* Limits the content width on large screens */
+  margin: 0 auto; /* Centers the container */
+  padding: 0 2rem; /* Adds padding on the left and right */
+}
+
+/* Styles for the ul element */
 .navbar ul {
   display: flex;
-  gap: 20px;
   align-items: center;
+  gap: 1.5rem; /* Uses rem for consistent spacing */
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
+/* Styles for the links and buttons */
 .navbar li a, .nav-btn {
-  background: var(--nav-bg-color);
+  background: transparent; /* Makes the background transparent */
   border: 1px solid var(--nav-border-color);
   border-radius: 9999px;
   padding: 10px 18px;
@@ -69,13 +94,30 @@ body, html {
   transition: all 0.2s ease;
   text-decoration: none;
 }
+
+/* Styles for the primary button */
 .nav-btn.primary {
   background: var(--primary-btn-bg);
-  color: var(--text-color);
+  border-color: var(--primary-btn-bg); /* Matches border to background */
+  color: var(--primary-btn-text-color, #ffffff);
 }
+
+/* Hover effects */
 .nav-btn:hover,
 .navbar li a:hover {
   background: var(--nav-hover-bg);
+  border-color: var(--nav-hover-bg);
+  transform: translateY(-2px); /* Adds a subtle lift effect */
+}
+
+/* For a dark theme, you might want these variables defined */
+:root {
+  --nav-bg-color-rgb: 31, 31, 31;
+  --nav-border-color-rgb: 255, 255, 255;
+  --nav-hover-bg: #404040;
+  --primary-btn-bg: #61dafb;
+  --primary-btn-text-color: #282c34;
+  --text-color: #f0f0f0;
 }
 
 /* Hero Section */

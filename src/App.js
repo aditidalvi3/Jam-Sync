@@ -6,12 +6,10 @@ import SpotifyLogin from "./components/SpotifyLogin";
 import ChatRoom from "./components/ChatRoom";
 import SpotifyCallback from "./components/SpotifyCallback";
 import LandingPage from "./components/LandingPage";
-import Navbar from "./Navbar";
+// REMOVED: The import for the Sidebar component
+import Navbar from "./components/Navbar";
 
 function App() {
-  const [roomId, setRoomId] = useState("");
-  const [username, setUsername] = useState("");
-  const [joined, setJoined] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
@@ -26,37 +24,18 @@ function App() {
     setIsDarkMode((prev) => !prev);
   };
 
-  const handleJoin = () => {
-    if (roomId && username) {
-      setJoined(true);
-    }
-  };
-
   return (
     <Router>
-      {/* UPDATED: The main layout to correctly render sidebar and content */}
-      <div className="flex min-h-screen bg-[#121212] text-white font-sans">
-        <Navbar />
+      {/* ADDED: The top-level Navbar component */}
+      <Navbar />
 
-        <main className="flex-1 p-6 overflow-y-auto">
+      <div className="bg-[#121212] text-white font-sans">
+        {/* REMOVED: The Sidebar component from the layout */}
+        <main className="flex-1 p-6 overflow-y-auto main-content">
           <Routes>
             <Route path="/" element={<LandingPage onToggleTheme={toggleTheme} isDarkMode={isDarkMode} />} />
-            <Route
-              path="/join"
-              element={
-                !joined ? (
-                  <JoinRoomUI
-                    username={username}
-                    setUsername={setUsername}
-                    roomId={roomId}
-                    setRoomId={setRoomId}
-                    handleJoin={handleJoin}
-                  />
-                ) : (
-                  <ChatRoom roomId={roomId} username={username} />
-                )
-              }
-            />
+            <Route path="/rooms" element={<JoinRoomUI />} />
+            <Route path="/chat/:roomId/:username" element={<ChatRoom />} />
             <Route path="/login" element={<SpotifyLogin />} />
             <Route path="/callback" element={<SpotifyCallback />} />
           </Routes>
