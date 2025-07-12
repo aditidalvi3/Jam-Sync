@@ -5,7 +5,6 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Your Navbar elements go here */}
         <div className="navbar-left">
           <h1 className="text-2xl font-bold text-white">JamSync</h1>
         </div>
