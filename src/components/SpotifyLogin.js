@@ -2,8 +2,10 @@ import React from "react";
 
 const SpotifyLogin = () => {
   const handleLogin = () => {
-    // Use an environment variable for the backend URL
-    const backendUrl = process.env.REACT_APP_BACKEND_URL || "https://jamsync-backend.onrender.com";
+    // Fall back to Render URL if environment variable isn't set
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://jamsync-backend.onrender.com";
+    
+    // Navigate to backend /login (which redirects to Spotify)
     window.location.href = `${backendUrl}/login`;
   };
 
